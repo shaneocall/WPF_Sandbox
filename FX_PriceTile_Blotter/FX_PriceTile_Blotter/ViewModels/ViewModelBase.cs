@@ -14,11 +14,11 @@ namespace FX_PriceTile_Blotter.ViewModels
     {
         public event PropertyChangedEventHandler PropertyChanged;
 
-        //[NotifyPropertyChangedInvocator]
-        //protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
-        //{
-        //    PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-        //}
+        [NotifyPropertyChangedInvocator]
+        protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        }
 
         [NotifyPropertyChangedInvocator]
         protected virtual void OnPropertyChanged<T>(ref T oldValue, T newValue,
@@ -35,8 +35,6 @@ namespace FX_PriceTile_Blotter.ViewModels
 
             //Set the new value
             oldValue = newValue;
-
-
 
             //Raise the value changed handler
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));

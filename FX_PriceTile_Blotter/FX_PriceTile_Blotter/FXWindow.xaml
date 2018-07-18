@@ -6,7 +6,7 @@
         xmlns:local="clr-namespace:FX_PriceTile_Blotter"
         xmlns:localVms="clr-namespace:FX_PriceTile_Blotter.ViewModels"
         mc:Ignorable="d"
-        d:DataContext="{d:DesignInstance localVms:PriceTileVM}"
+        d:DataContext="{d:DesignInstance localVms:PriceTileViewModel}"
         Title="FXWindow" Height="450" Width="800">
     <Grid>
         
@@ -19,20 +19,54 @@
                 <RowDefinition/>
                 <RowDefinition/>
             </Grid.RowDefinitions>
-        
 
-            <Button Grid.Row="0" Grid.Column="0" Content="{Binding BuyText}"></Button>
-            <Button Grid.Row="0" Grid.Column="1" Content="{Binding SellText}" Command="{Binding SellButton}"></Button>
-        
-            <ListView Grid.Column="0" Grid.ColumnSpan="2" Grid.Row="1">
-                <ListView.Items>
-                    <ListViewItem>test</ListViewItem>
-                    <ListViewItem>test 2</ListViewItem>
-                    <ListViewItem>test 2</ListViewItem>
-                    <ListViewItem>test 2</ListViewItem>
-                    <ListViewItem>test 2</ListViewItem>
-                </ListView.Items>
-            </ListView>
+
+        <Button Grid.Row="0" Grid.Column="0" VerticalAlignment="Stretch"
+                FontFamily="Arial" FontSize="60" Command="{Binding BuyButton}">
+            <StackPanel Orientation="Vertical">
+                <TextBlock VerticalAlignment="Top" HorizontalAlignment="Center">Buy</TextBlock>
+                <TextBlock VerticalAlignment="Bottom" HorizontalAlignment="Center" Text="{Binding BuyPrice}"></TextBlock>
+            </StackPanel>
+        </Button>
+
+        <Button Grid.Row="0" Grid.Column="1" VerticalAlignment="Stretch"
+                FontFamily="Arial" FontSize="60" Command="{Binding SellButton}">
+            <StackPanel Orientation="Vertical">
+                <TextBlock VerticalAlignment="Top" HorizontalAlignment="Center">Sell</TextBlock>
+                <TextBlock VerticalAlignment="Bottom" HorizontalAlignment="Center" Text="{Binding SellPrice}"></TextBlock>
+            </StackPanel>
+        </Button>
+
+        <ListView Grid.Column="0" HorizontalAlignment="Stretch" Grid.ColumnSpan="2" Grid.Row="1" ItemsSource="{Binding BlotterViewModel.TradeList}">
+            <!--<ListView.ItemTemplate>
+                <DataTemplate>
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock Text="{Binding TimeStamp}">               </TextBlock>
+                        <TextBlock Text="{Binding Trader}">               </TextBlock>
+                        <TextBlock Text="{Binding Direction}">               </TextBlock>
+                        <TextBlock Text="{Binding CcyPair}">               </TextBlock>
+                        <TextBlock Text="{Binding Quantity}">               </TextBlock>
+                        <TextBlock Text="{Binding Price}">               </TextBlock>
+                    </StackPanel>
+                </DataTemplate>
+            </ListView.ItemTemplate>-->
+
+           
+
+            <ListView.View >
+                <GridView>
+                    <GridViewColumn  Header="Date" DisplayMemberBinding="{Binding TimeStamp}" />
+                    <GridViewColumn Header="Trader" DisplayMemberBinding="{Binding Trader}"    />
+                    <GridViewColumn Header="Buy/Sell" DisplayMemberBinding="{Binding Direction}" />
+                    <GridViewColumn Header="Ccy Pair" DisplayMemberBinding="{Binding CcyPair}"/>
+                    <GridViewColumn Header="Quantity" DisplayMemberBinding="{Binding Quantity}"/>
+                    <GridViewColumn Header="Price" DisplayMemberBinding="{Binding Price}"/>
+                </GridView>
+            </ListView.View>
+
+
+
+        </ListView>
 
         
     </Grid>
