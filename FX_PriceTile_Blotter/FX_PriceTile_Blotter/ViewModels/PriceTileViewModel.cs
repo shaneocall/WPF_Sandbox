@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
+using System.Windows.Threading;
 using FX_PriceTile_Blotter.Models;
 
 namespace FX_PriceTile_Blotter.ViewModels
@@ -21,8 +22,8 @@ namespace FX_PriceTile_Blotter.ViewModels
             //_buyPrice = 1.42;
             //_sellPrice = 1.33;
 
-            BuyButton = new DelegateCommand(o => ExecuteTrade(TradeDirection.Buy, BuyPrice), o => true);
-            SellButton = new DelegateCommand(o => ExecuteTrade(TradeDirection.Sell, SellPrice), o => true);
+            BuyCommand = new DelegateCommand(o => ExecuteTrade(TradeDirection.Buy, BuyPrice), o => true);
+            SellCommand = new DelegateCommand(o => ExecuteTrade(TradeDirection.Sell, SellPrice), o => true);
 
             BlotterViewModel = new BlotterViewModel();
         }
@@ -34,25 +35,49 @@ namespace FX_PriceTile_Blotter.ViewModels
           BlotterViewModel.TradeList.Add(new TradeViewModel(DateTime.Now, Environment.UserName, direction, "CADUSD", quantity.Next(100, 1000), price));
         }
 
-        public ICommand SellButton { get; }
-        public ICommand BuyButton { get; }
+        public ICommand SellCommand { get; }
+        public ICommand BuyCommand { get; }
 
         private double _buyPrice;
         private double _sellPrice;
+        private Colour _sellColour = Colour.Black;
+        private Colour _buyColour = Colour.Black;
 
         public double BuyPrice
         {
             get => _buyPrice;
-            set => OnPropertyChanged(ref _buyPrice, value, nameof(BuyPrice));
+            set => OnPropertyChanged(ref _buyPrice, value, nameof(BuyPrice), () =>  BuyColour = value > _buyPrice ? Colour.Green : Colour.Red );
         }
+
 
         public double SellPrice
         {
             get => _sellPrice;
-            set => OnPropertyChanged( ref _sellPrice, value, nameof(SellPrice));
+            set => OnPropertyChanged( ref _sellPrice, value, nameof(SellPrice), () => SellColour = value > _sellPrice ? Colour.Green : Colour.Red);
         }
 
+
+        public Colour SellColour
+        {
+            get => _sellColour;
+            set => OnPropertyChanged(ref _sellColour, value, nameof(SellColour));
+        }
+
+        public Colour BuyColour
+        {
+            get => _buyColour;
+            set => OnPropertyChanged(ref _buyColour, value, nameof(BuyColour));
+        }
+
+
         public BlotterViewModel BlotterViewModel { get; set; }
+
+        public enum Colour
+        {
+            Black = 0,
+            Red = 1,
+            Green = 2
+        }
 
     }
 }

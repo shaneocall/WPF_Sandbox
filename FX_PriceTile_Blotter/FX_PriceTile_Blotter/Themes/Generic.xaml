@@ -1,0 +1,39 @@
+<ResourceDictionary
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="clr-namespace:FX_PriceTile_Blotter"
+    xmlns:controls="clr-namespace:FX_PriceTile_Blotter.Controls">
+
+
+    <Style TargetType="{x:Type controls:PriceTileControl}">
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type controls:PriceTileControl}">
+                  <Button x:Name="PART_Button" 
+                          Command="{TemplateBinding ExecuteTradeCommand}"
+                          VerticalAlignment="Stretch" FontFamily="Arial" FontSize="60">
+                        <StackPanel Orientation="Vertical">
+                            <TextBlock VerticalAlignment="Top"
+                                       HorizontalAlignment="Center"
+                                       Text="{TemplateBinding TradeDirection}"/>
+                            <StackPanel Orientation="Horizontal">
+                                <TextBlock x:Name="PART_ArrowBlock"
+                                           Foreground="{Binding ElementName=PART_PriceBlock, Path=Foreground}"
+                                            VerticalAlignment="Center" FontSize="50">
+                                </TextBlock>
+                                <TextBlock 
+                                    x:Name="PART_PriceBlock"
+                                    VerticalAlignment="Bottom" 
+                                    HorizontalAlignment="Center" Text="{TemplateBinding Price}">
+                                </TextBlock>
+                            </StackPanel>
+                        </StackPanel>
+                    </Button>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+
+  
+</ResourceDictionary>
