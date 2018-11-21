@@ -13,7 +13,7 @@
     <Window.Resources>
         <converters:BrushColourConveter x:Key="BrushColourConveter" />
     </Window.Resources>
-    <Grid>
+        <Grid>
         
         <Grid.ColumnDefinitions>
             <ColumnDefinition/>
@@ -28,13 +28,13 @@
         <!--Buy Button-->
 
         <controls:PriceTileControl Price="{Binding BuyPrice}"
-                                   TradeDirection="Buy" 
+                                   TradeDirection="{Binding BuyCommand.Name}" 
                                    ExecuteTradeCommand="{Binding BuyCommand}"
                                    Grid.Row="0" Grid.Column="0" VerticalAlignment="Stretch"/>
 
         <controls:PriceTileControl Price="{Binding SellPrice}"
                                    ExecuteTradeCommand="{Binding SellCommand}"
-                                   TradeDirection="Sell" 
+                                   TradeDirection="{Binding SellCommand.Name}"  
                                    Grid.Row="0" Grid.Column="1" VerticalAlignment="Stretch"/>
         
 

@@ -1,47 +1,89 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Linq;
 using System.Runtime.CompilerServices;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Input;
-using FX_PriceTile_Blotter.Annotations;
 
 namespace FX_PriceTile_Blotter.ViewModels
 {
-    public abstract class ViewModelBase : INotifyPropertyChanged
+    /// <summary>
+    /// Base class for creating a generic disposable view model.
+    /// </summary>
+    /// <seealso cref="System.ComponentModel.INotifyPropertyChanged" />
+    /// <seealso cref="System.IDisposable" />
+    public abstract class ViewModelBase : INotifyPropertyChanged, IDisposable
     {
         public event PropertyChangedEventHandler PropertyChanged;
 
-        [NotifyPropertyChangedInvocator]
-        protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
+        /// <summary>
+        /// Checks if the property matches the existing value, if not, the new value is set
+        /// and fires the PropertyChanged event.
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="oldValue">The old value.</param>
+        /// <param name="newValue">The new value.</param>
+        /// <param name="propertyName">Name of the property. </param>
+        /// <param name="preAction">An optional action to be carried out on the UI thread before the old and new values are compared.</param>
+        /// <param name="postAction">An optional action to be carried out on the UI thread only after the new value has been set.</param>
+        protected void OnPropertyChanged<T>(ref T oldValue,
+                                            T newValue,
+                                            [CallerMemberName] string propertyName = null,
+                                            Action preAction = null,
+                                            Action postAction = null)
         {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-        }
 
-        [NotifyPropertyChangedInvocator]
-        protected virtual void OnPropertyChanged<T>(ref T oldValue, T newValue,
-             [CallerMemberName] string propertyName = null, Action preAction = null, Action postAction = null)
-        {
-            //Do not add any exception handling here, any excpetions should bubble straight up
+            if (preAction != null)
+                System.Windows.Application.Current?.Dispatcher?.Invoke(preAction);
 
-            //Invoke any pre event actions, note this is fired regardless of whether the value is set
+            if (EqualityComparer<T>.Default.Equals(oldValue, newValue)) return;
+
             preAction?.Invoke();
 
-            //Cast to object to compare values, if they cannot cast then 
-            //an exception should be thrown
-            if ((object)oldValue == (object)newValue) return;
-
-            //Set the new value
             oldValue = newValue;
 
-            //Raise the value changed handler
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+            RaisePropertyChanged(propertyName);
 
-            //Invoke any post event actions
-            postAction?.Invoke();
+            if (postAction != null)
+                System.Windows.Application.Current?.Dispatcher?.Invoke(postAction);
+
         }
 
+        /// <summary>
+        /// Notifies listeners that a property value has changed.
+        /// </summary>
+        /// <param name="propertyName">Name of the property used to notify listeners.  This
+        /// value is optional and can be provided automatically when invoked from compilers
+        /// that support <see cref="CallerMemberNameAttribute"/>.</param>
+        protected virtual void RaisePropertyChanged(string propertyName = null)
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        }
+
+        #region DisposeLogic
+
+        /// <summary>
+        /// Is this instance disposed?
+        /// </summary>
+        public bool Disposed { get; private set; }
+
+        /// <summary>
+        /// Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
+        /// </summary>
+        public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        /// <summary>
+        /// Dispose worker method.
+        /// </summary>
+        /// <param name="disposing">Are we disposing? 
+        /// Otherwise we're finalizing.</param>
+        protected virtual void Dispose(bool disposing)
+        {
+            Disposed = true;
+        }
+
+        #endregion
     }
 }

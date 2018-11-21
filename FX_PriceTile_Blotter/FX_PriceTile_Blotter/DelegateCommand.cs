@@ -1,58 +1,92 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Input;
+using FX_PriceTile_Blotter.ViewModels;
 
 namespace FX_PriceTile_Blotter
 {
-
-    public class DelegateCommand : ICommand
+    /// <summary>
+    /// The generic delegate command for view model command binding.
+    /// </summary>
+    /// <seealso cref="ViewModelBase" />
+    /// <seealso cref="System.Windows.Input.ICommand" />
+    public class DelegateCommand : ViewModelBase, ICommand
     {
-        private readonly Predicate<object> _canExecute;
-        private readonly Action<object> _execute;
+        internal readonly Action _execute;
+        internal readonly Action<object> _executeWithParameter;
+        internal readonly Func<bool> _canExecute;
+        internal string _name;
 
-        public DelegateCommand(Action<object> execute)
-            : this(execute, null)
+        /// <summary>
+        /// Initializes a new instance of the <see cref="DelegateCommand"/> class.
+        /// </summary>
+        /// <param name="execute">The action to execute.</param>
+        /// <param name="canExecute">Flag that allows the action to execute.</param>
+        /// <param name="name">Optional name for the delegate command that supports binding updates</param>
+        public DelegateCommand(Action execute, Func<bool> canExecute = null, string name = null)
         {
-        }
-
-        public DelegateCommand(Action<object> execute,
-            Predicate<object> canExecute)
-        {
-            _execute = execute;
+            _executeWithParameter = o => execute();
             _canExecute = canExecute;
+            _name = name;
         }
 
+        public DelegateCommand(Action<object> execute, Func<bool> canExecute = null, string name = null)
+        {
+            _executeWithParameter = execute;
+            _canExecute = canExecute;
+            _name = name;
+        }
 
-        #region ICommand Members
+        /// <summary>
+        /// Gets or sets the command name.
+        /// </summary>
+        /// <value>
+        /// The name.
+        /// </value>
+        public string Name
+        {
+            get => _name;
+            set => OnPropertyChanged(ref _name, value, Name);
+        }
 
-        public event EventHandler CanExecuteChanged;
-
+        /// <summary>
+        /// Defines the method that determines whether the command can execute in its current state.
+        /// </summary>
+        /// <param name="parameter">Data used by the command.  If the command does not require data to be passed, this object can be set to <see langword="null" />.</param>
+        /// <returns>
+        ///   <see langword="true" /> if this command can be executed; otherwise, <see langword="false" />.
+        /// </returns>
         public bool CanExecute(object parameter)
         {
-            if (_canExecute == null)
+            if (_execute == null && _executeWithParameter == null)
             {
-                return true;
+                return false;
             }
 
-            return _canExecute(parameter);
+            return _canExecute == null || _canExecute();
         }
 
+        /// <summary>
+        /// Defines the method to be called when the command is invoked.
+        /// </summary>
+        /// <param name="parameter">Data used by the command.  If the command does not require data to be passed, this object can be set to <see langword="null" />.</param>
         public void Execute(object parameter)
         {
-            _execute(parameter);
+            _executeWithParameter?.Invoke(parameter);
         }
 
-        #endregion
+        /// <summary>
+        /// Occurs when changes occur that affect whether or not the command should execute.
+        /// </summary>
+        public event EventHandler CanExecuteChanged;
 
+        /// <summary>
+        /// Raises the can execute changed.
+        /// </summary>
         public void RaiseCanExecuteChanged()
         {
-            if (CanExecuteChanged != null)
-            {
-                CanExecuteChanged(this, EventArgs.Empty);
-            }
+            CanExecuteChanged?.Invoke(this, EventArgs.Empty);
         }
+
     }
 }
+

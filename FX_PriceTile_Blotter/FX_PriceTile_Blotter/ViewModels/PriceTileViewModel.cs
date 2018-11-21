@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reactive.Linq;
 using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
@@ -13,30 +14,30 @@ namespace FX_PriceTile_Blotter.ViewModels
 {
     public class PriceTileViewModel : ViewModelBase
     {
-        public PriceTileViewModel(IObservable<double> PriceFeed)
+        public PriceTileViewModel(BlotterViewModel blotterViewModel, IObservable<double> priceFeed)
         {
+            BlotterViewModel = blotterViewModel;
 
-            PriceFeed.Subscribe(price => BuyPrice = Math.Round(price, 2));
-            PriceFeed.Subscribe(price => SellPrice = 2 - Math.Round(price, 2));
+            priceFeed.Subscribe(price => BuyPrice = Math.Round(price, 2));
+            priceFeed.Subscribe(price => SellPrice = 2 - Math.Round(price, 2));
 
             //_buyPrice = 1.42;
             //_sellPrice = 1.33;
 
-            BuyCommand = new DelegateCommand(o => ExecuteTrade(TradeDirection.Buy, BuyPrice), o => true);
-            SellCommand = new DelegateCommand(o => ExecuteTrade(TradeDirection.Sell, SellPrice), o => true);
-
-            BlotterViewModel = new BlotterViewModel();
+            BuyCommand = new DelegateCommand( () => ExecuteTrade(TradeDirection.Buy, BuyPrice), () => true, TradeDirection.Buy.ToString());
+            SellCommand = new DelegateCommand(() => ExecuteTrade(TradeDirection.Sell, SellPrice), () => true, TradeDirection.Sell.ToString());
         }
 
         private void ExecuteTrade(TradeDirection direction, double price)
         {
             var quantity = new Random();
 
-          BlotterViewModel.TradeList.Add(new TradeViewModel(DateTime.Now, Environment.UserName, direction, "CADUSD", quantity.Next(100, 1000), price));
+            BlotterViewModel.TradeList.Add(new TradeViewModel(DateTime.Now, Environment.UserName, direction, "CADUSD",
+                quantity.Next(100, 1000), price));
         }
 
-        public ICommand SellCommand { get; }
-        public ICommand BuyCommand { get; }
+        public DelegateCommand SellCommand { get; }
+        public DelegateCommand BuyCommand { get; }
 
         private double _buyPrice;
         private double _sellPrice;
@@ -46,7 +47,7 @@ namespace FX_PriceTile_Blotter.ViewModels
         public double BuyPrice
         {
             get => _buyPrice;
-            set => OnPropertyChanged(ref _buyPrice, value, nameof(BuyPrice), () =>  BuyColour = value > _buyPrice ? Colour.Green : Colour.Red );
+            set => OnPropertyChanged(ref _buyPrice, value, nameof(BuyPrice), () =>  BuyColour = value > _buyPrice ? Colour.Green : Colour.Red);
         }
 
 

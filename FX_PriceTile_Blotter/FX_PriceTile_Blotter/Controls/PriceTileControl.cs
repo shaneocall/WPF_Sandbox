@@ -107,14 +107,8 @@ namespace FX_PriceTile_Blotter.Controls
         [Bindable(true)]
         public string Price
         {
-            get
-            {
-                return (string)this.GetValue(PriceProperty);
-            }
-            set
-            {
-                this.SetValue(PriceProperty, value);
-            }
+            get => (string)this.GetValue(PriceProperty);
+            set => this.SetValue(PriceProperty, value);
         }
 
         public static readonly DependencyProperty TradeDirectionProperty = DependencyProperty.Register("TradeDirection",
@@ -126,14 +120,8 @@ namespace FX_PriceTile_Blotter.Controls
 
         public string TradeDirection
         {
-            get
-            {
-                return (string)this.GetValue(TradeDirectionProperty);
-            }
-            set
-            {
-                this.SetValue(TradeDirectionProperty, value);
-            }
+            get => (string)this.GetValue(TradeDirectionProperty);
+            set => this.SetValue(TradeDirectionProperty, value);
         }
 
         public static readonly DependencyProperty ExecuteTradeCommandProperty =
@@ -141,14 +129,8 @@ namespace FX_PriceTile_Blotter.Controls
 
         public ICommand ExecuteTradeCommand
         {
-            get
-            {
-                return (ICommand)GetValue(ExecuteTradeCommandProperty);
-            }
-            set
-            {
-                SetValue(ExecuteTradeCommandProperty, value);
-            }
+            get => (ICommand)GetValue(ExecuteTradeCommandProperty);
+            set => SetValue(ExecuteTradeCommandProperty, value);
         }
     }
 }
