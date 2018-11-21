@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Runtime.CompilerServices;
+using System.Windows;
 using System.Windows.Input;
 using FX_PriceTile_Blotter.ViewModels;
 
@@ -11,29 +13,38 @@ namespace FX_PriceTile_Blotter
     /// <seealso cref="System.Windows.Input.ICommand" />
     public class DelegateCommand : ViewModelBase, ICommand
     {
-        internal readonly Action _execute;
         internal readonly Action<object> _executeWithParameter;
         internal readonly Func<bool> _canExecute;
         internal string _name;
+        private readonly ViewModelBase _vm;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="DelegateCommand"/> class.
         /// </summary>
+        /// <param name="vm">The view model the delegate command is created in.</param>
         /// <param name="execute">The action to execute.</param>
         /// <param name="canExecute">Flag that allows the action to execute.</param>
         /// <param name="name">Optional name for the delegate command that supports binding updates</param>
-        public DelegateCommand(Action execute, Func<bool> canExecute = null, string name = null)
+        /// <param name="propertyName"></param>
+        public DelegateCommand(ViewModelBase vm, Action execute, Func<bool> canExecute = null, string name = null,
+           [CallerMemberName] string propertyName = null ) : this(vm,
+            o => execute(), canExecute, name, propertyName)
         {
-            _executeWithParameter = o => execute();
-            _canExecute = canExecute;
-            _name = name;
         }
 
-        public DelegateCommand(Action<object> execute, Func<bool> canExecute = null, string name = null)
+        public DelegateCommand(ViewModelBase vm, Action<object> execute, Func<bool> canExecute = null, string name = null, [CallerMemberName] string propertyName = null)
         {
             _executeWithParameter = execute;
             _canExecute = canExecute;
             _name = name;
+            _vm = vm;
+
+            if (_vm != null) _vm.PropertyChanged += (sender, args) =>
+            {
+              if(args.PropertyName == null || string.Equals(args.PropertyName, propertyName)) RaiseCanExecuteChanged();
+            };
+
+           
         }
 
         /// <summary>
@@ -57,7 +68,7 @@ namespace FX_PriceTile_Blotter
         /// </returns>
         public bool CanExecute(object parameter)
         {
-            if (_execute == null && _executeWithParameter == null)
+            if (_executeWithParameter == null)
             {
                 return false;
             }
@@ -84,9 +95,15 @@ namespace FX_PriceTile_Blotter
         /// </summary>
         public void RaiseCanExecuteChanged()
         {
-            CanExecuteChanged?.Invoke(this, EventArgs.Empty);
+            Application.Current?.Dispatcher?.Invoke(() => CanExecuteChanged?.Invoke(this, EventArgs.Empty));
         }
 
+        protected override void Dispose(bool disposing)
+        {
+            if (_vm != null) _vm.PropertyChanged -= (sender, args) => RaiseCanExecuteChanged();
+
+            base.Dispose(disposing);
+        }
     }
 }
 

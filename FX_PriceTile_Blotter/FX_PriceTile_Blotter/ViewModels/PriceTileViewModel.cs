@@ -24,8 +24,9 @@ namespace FX_PriceTile_Blotter.ViewModels
             //_buyPrice = 1.42;
             //_sellPrice = 1.33;
 
-            BuyCommand = new DelegateCommand( () => ExecuteTrade(TradeDirection.Buy, BuyPrice), () => true, TradeDirection.Buy.ToString());
-            SellCommand = new DelegateCommand(() => ExecuteTrade(TradeDirection.Sell, SellPrice), () => true, TradeDirection.Sell.ToString());
+           
+            BuyCommand = new DelegateCommand(this, () => ExecuteTrade(TradeDirection.Buy, BuyPrice), () => true, TradeDirection.Buy.ToString(), nameof(BuyCommand));
+            SellCommand = new DelegateCommand(this, () => ExecuteTrade(TradeDirection.Sell, SellPrice), () => true, TradeDirection.Sell.ToString(), nameof(SellCommand));
         }
 
         private void ExecuteTrade(TradeDirection direction, double price)
@@ -34,10 +35,12 @@ namespace FX_PriceTile_Blotter.ViewModels
 
             BlotterViewModel.TradeList.Add(new TradeViewModel(DateTime.Now, Environment.UserName, direction, "CADUSD",
                 quantity.Next(100, 1000), price));
+
+            RaisePropertyChanged(nameof(BuyCommand));
         }
 
-        public DelegateCommand SellCommand { get; }
-        public DelegateCommand BuyCommand { get; }
+        public ICommand SellCommand { get; }
+        public ICommand BuyCommand { get; }
 
         private double _buyPrice;
         private double _sellPrice;
