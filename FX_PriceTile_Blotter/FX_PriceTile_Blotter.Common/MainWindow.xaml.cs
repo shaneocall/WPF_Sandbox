@@ -13,14 +13,14 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 
-namespace FX_PriceTile_Blotter
+namespace FX_PriceTile_Blotter.Common
 {
     /// <summary>
-    /// Interaction logic for FXWindow.xaml
+    /// Interaction logic for MainWindow.xaml
     /// </summary>
-    public partial class FXWindow : Window
+    public partial class MainWindow : Window
     {
-        public FXWindow()
+        public MainWindow()
         {
             InitializeComponent();
         }

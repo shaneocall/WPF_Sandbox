@@ -5,6 +5,8 @@ VisualStudioVersion = 15.0.27703.2026
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FX_PriceTile_Blotter", "FX_PriceTile_Blotter\FX_PriceTile_Blotter.csproj", "{B2A7AACA-6E21-4E1D-AF5C-F0FCAEBB6669}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FX_PriceTile_Blotter.Common", "FX_PriceTile_Blotter.Common\FX_PriceTile_Blotter.Common.csproj", "{4F30CB5F-2AC0-4AE5-8B84-716BDDA4F006}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -15,6 +17,10 @@ Global
 		{B2A7AACA-6E21-4E1D-AF5C-F0FCAEBB6669}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B2A7AACA-6E21-4E1D-AF5C-F0FCAEBB6669}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B2A7AACA-6E21-4E1D-AF5C-F0FCAEBB6669}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4F30CB5F-2AC0-4AE5-8B84-716BDDA4F006}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4F30CB5F-2AC0-4AE5-8B84-716BDDA4F006}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4F30CB5F-2AC0-4AE5-8B84-716BDDA4F006}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4F30CB5F-2AC0-4AE5-8B84-716BDDA4F006}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

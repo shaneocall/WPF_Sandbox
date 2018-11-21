@@ -8,6 +8,7 @@ using System.Windows;
 using FX_PriceTile_Blotter.Feeds;
 using FX_PriceTile_Blotter.ViewModels;
 
+
 namespace FX_PriceTile_Blotter
 {
     /// <summary>
@@ -15,16 +16,35 @@ namespace FX_PriceTile_Blotter
     /// </summary>
     public partial class App : Application
     {
-        private void App_OnStartup(object sender, StartupEventArgs e)
+        private Bootstrapper _bootstrapper;
+        //private void App_OnStartup(object sender, StartupEventArgs e)
+        //{
+        //    var priceFeed = new FXPriceFeed();
+        //    var vm = new PriceTileViewModel(priceFeed.PriceFeed);
+        //    var window = new FXWindow() {DataContext = vm};
+
+
+
+        //    window?.Show();
+
+        //}
+
+        protected override void OnStartup(StartupEventArgs e)
         {
-            var priceFeed = new FXPriceFeed();
-            var vm = new PriceTileViewModel(priceFeed.PriceFeed);
-            var window = new FXWindow() {DataContext = vm};
+       
 
-
-
-            window?.Show();
-
+            base.OnStartup(e);
+            _bootstrapper = new Bootstrapper();
+            _bootstrapper.Run();
         }
+
+        protected override void OnExit(ExitEventArgs e)
+        {
+
+            _bootstrapper.Dispose();
+            base.OnExit(e);
+        }
+
+
     }
 }

@@ -1,19 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.ComponentModel;
-using System.Diagnostics;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 
 namespace FX_PriceTile_Blotter.Controls
 {
@@ -90,13 +80,13 @@ namespace FX_PriceTile_Blotter.Controls
 
             if (Convert.ToDouble(e.OldValue) < Convert.ToDouble(e.NewValue))
             {
-                _priceBlock.Foreground = _greenColourBrush;
-                _arrowBlock.Text = ((char) 11205).ToString();
+                if (_priceBlock != null) _priceBlock.Foreground = _greenColourBrush;
+                if (_arrowBlock != null) _arrowBlock.Text = ((char) 11205).ToString();
             }
             else
             {
-                _priceBlock.Foreground = _redColourBrush;
-                _arrowBlock.Text = ((char) 11206).ToString();
+                if (_priceBlock != null) _priceBlock.Foreground = _redColourBrush;
+                if (_arrowBlock != null) _arrowBlock.Text = ((char) 11206).ToString();
             }
         }
 

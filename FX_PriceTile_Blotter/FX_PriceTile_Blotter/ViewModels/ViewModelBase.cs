@@ -7,10 +7,11 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using FX_PriceTile_Blotter.Annotations;
+using FX_PriceTile_Blotter.Interfaces;
 
 namespace FX_PriceTile_Blotter.ViewModels
 {
-    public abstract class ViewModelBase : INotifyPropertyChanged
+    public abstract class ViewModelBase : INotifyPropertyChanged, IViewModel
     {
         public event PropertyChangedEventHandler PropertyChanged;
 
@@ -43,5 +44,19 @@ namespace FX_PriceTile_Blotter.ViewModels
             postAction?.Invoke();
         }
 
+        protected virtual void Dispose(bool disposing)
+        {
+            if (disposing)
+            {
+                Dispose();
+            }
+           
+        }
+
+        public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
     }
 }

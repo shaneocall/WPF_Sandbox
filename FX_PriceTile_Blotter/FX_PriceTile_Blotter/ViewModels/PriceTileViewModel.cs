@@ -7,17 +7,21 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
 using System.Windows.Threading;
+using FX_PriceTile_Blotter.Extensions;
+using FX_PriceTile_Blotter.Interfaces;
 using FX_PriceTile_Blotter.Models;
 
 namespace FX_PriceTile_Blotter.ViewModels
 {
     public class PriceTileViewModel : ViewModelBase
     {
-        public PriceTileViewModel(IObservable<double> PriceFeed)
+        private readonly List<IDisposable> _disposables = new List<IDisposable>();
+
+        public PriceTileViewModel(IFxPriceFeed priceFeed)
         {
 
-            PriceFeed.Subscribe(price => BuyPrice = Math.Round(price, 2));
-            PriceFeed.Subscribe(price => SellPrice = 2 - Math.Round(price, 2));
+            priceFeed.PriceFeed.Subscribe(price => BuyPrice = Math.Round(price, 2)).AddTo(_disposables);
+            priceFeed.PriceFeed.Subscribe(price => SellPrice = 2 - Math.Round(price, 2)).AddTo(_disposables);
 
             //_buyPrice = 1.42;
             //_sellPrice = 1.33;
@@ -32,7 +36,8 @@ namespace FX_PriceTile_Blotter.ViewModels
         {
             var quantity = new Random();
 
-          BlotterViewModel.TradeList.Add(new TradeViewModel(DateTime.Now, Environment.UserName, direction, "CADUSD", quantity.Next(100, 1000), price));
+            BlotterViewModel.TradeList.Add(new TradeViewModel(DateTime.Now, Environment.UserName, direction, "CADUSD",
+                quantity.Next(100, 1000), price));
         }
 
         public ICommand SellCommand { get; }
@@ -46,14 +51,16 @@ namespace FX_PriceTile_Blotter.ViewModels
         public double BuyPrice
         {
             get => _buyPrice;
-            set => OnPropertyChanged(ref _buyPrice, value, nameof(BuyPrice), () =>  BuyColour = value > _buyPrice ? Colour.Green : Colour.Red );
+            set => OnPropertyChanged(ref _buyPrice, value, nameof(BuyPrice),
+                () => BuyColour = value > _buyPrice ? Colour.Green : Colour.Red);
         }
 
 
         public double SellPrice
         {
             get => _sellPrice;
-            set => OnPropertyChanged( ref _sellPrice, value, nameof(SellPrice), () => SellColour = value > _sellPrice ? Colour.Green : Colour.Red);
+            set => OnPropertyChanged(ref _sellPrice, value, nameof(SellPrice),
+                () => { SellColour = value > _sellPrice ? Colour.Green : Colour.Red; });
         }
 
 
@@ -79,5 +86,15 @@ namespace FX_PriceTile_Blotter.ViewModels
             Green = 2
         }
 
+
+        protected override void Dispose(bool disposing)
+        {
+            foreach (var disposable in _disposables.Where(x => x != null))
+            {
+                disposable.Dispose();
+            }
+
+            base.Dispose(disposing);
+        }
     }
 }

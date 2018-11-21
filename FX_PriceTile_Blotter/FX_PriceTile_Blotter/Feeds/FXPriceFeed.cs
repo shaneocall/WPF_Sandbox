@@ -6,10 +6,11 @@ using System.Reactive.Subjects;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using FX_PriceTile_Blotter.Interfaces;
 
 namespace FX_PriceTile_Blotter.Feeds
 {
-    public  class FXPriceFeed
+    public  class FXPriceFeed : IFxPriceFeed
     {
         private Subject<double> _priceSubject = new Subject<double>();
 
